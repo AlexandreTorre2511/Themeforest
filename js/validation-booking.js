@@ -50,18 +50,27 @@ $(document).ready(function () {
             return;
         }
 
+        // Hand the form to Web3Forms, which emails it on. See js/form-config.js.
+        const payload = web3formsPayload($("#booking_form"), "New Service Appointment");
+
+        if (payload === null) {
+            $("#error_message").show();
+            return;
+        }
+
         $("#send_message")
             .prop("disabled", true)
             .val("Sending...");
 
         $.ajax({
-            url: "booking.php",
+            url: WEB3FORMS_ENDPOINT,
             type: "POST",
-            data: $("#booking_form").serialize(),
+            dataType: "json",
+            data: payload,
 
             success: function (result) {
 
-                if ($.trim(result) === "sent") {
+                if (result.success) {
 
                     let html = "";
 
